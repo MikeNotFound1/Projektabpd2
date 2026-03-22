@@ -31,5 +31,54 @@ public class Wypozyczalnia
                 Console.WriteLine($"{e.Id} | {e.Nazwa}");
         }
     }
-   
+
+    public void Wypozycz(int userId, int sprzetId)
+    {
+        var uzytkownik = _uzytkownicy.FirstOrDefault(u => u.Id == userId);
+        var sprzet = _ekwipunek.FirstOrDefault(s => s.Id == sprzetId);
+
+        if (!sprzet.CzyDostepny)
+        {
+            Console.WriteLine("Sprzet jest zajety");
+            return;
+        }
+
+        int liczbaWypozyczonych = _wypozyczenia.Count(w => w.Uzytkownik.Id == userId);
+        if (liczbaWypozyczonych >= uzytkownik.LimitWypozyczen)
+        {
+            Console.WriteLine("Limit wypozyczen osiagniety");
+            return;
+        }
+
+        sprzet.CzyDostepny = false;
+        _wypozyczenia.Add(new Wypozyczenie
+        {
+            Uzytkownik = uzytkownik,
+            Sprzet = sprzet,
+            DataWypozyczenia = DateTime.Now,
+            TerminZwrotu = DateTime.Now.AddDays(7)
+        });
+    }
+
+    public void Zwroc(int sprzetId)
+    {
+        var sprzet = _ekwipunek.FirstOrDefault(s => s.Id == sprzetId);
+        var wypozyczenie = _wypozyczenia.FirstOrDefault(w => w.Sprzet.Id == sprzetId);
+
+        wypozyczenie.DataZwrotu = DateTime.Now;
+        sprzet.CzyDostepny = true;
+
+        if (wypozyczenie.PoTerminie)
+        {
+            int dniSpoznienia = (wypozyczenie.DataZwrotu.Value - wypozyczenie.DataWypozyczenia).Days;
+            Console.WriteLine($"Kara za spoznienie: {dniSpoznienia * KaraZaDzien}");
+        }
+    }
+
+    public void OznaczJakoNiedostepny(int sprzetId)
+    {
+        var sprzet = _ekwipunek.FirstOrDefault(s => s.Id == sprzetId);
+        sprzet.CzyDostepny = false;
+    }
+
 }
