@@ -13,6 +13,23 @@ public class Wypozyczalnia
     public void DodajSprzet(Sprzet sprzet) => _ekwipunek.Add(sprzet);
     public void DodajUzytkownika(Uzytkownik uzytkownik) => _uzytkownicy.Add(uzytkownik);
 
-    
+    public void WyswietlCalyEkwipunek()
+    {
+        Console.WriteLine("Id | Nazwa | Dostepnosc");
+        foreach (var e in _ekwipunek)
+        {
+            Console.WriteLine($"{e.Id} | {e.Nazwa} | {e.CzyDostepny}");
+        }
+    }
 
+    public void WyswietlDostepnyEkwipunek()
+    {
+        Console.WriteLine("Id | Nazwa");
+        foreach (var e in _ekwipunek)
+        {
+            if (e.CzyDostepny)
+                Console.WriteLine($"{e.Id} | {e.Nazwa}");
+        }
+    }
+   
 }
