@@ -81,4 +81,30 @@ public class Wypozyczalnia
         sprzet.CzyDostepny = false;
     }
 
+    public void PokazSprzetUzytkownika(int userId)
+    {
+        var wypozyczenia = _wypozyczenia.Where(w => w.Uzytkownik.Id == userId);
+        Console.WriteLine($"Id sprzet | Data wypozyczenia | Po Terminie");
+        foreach (var w in wypozyczenia)
+        {
+            Console.WriteLine($"{w.Sprzet.Id} | {w.DataWypozyczenia} | {w.PoTerminie}");
+        }
+    }
+
+    public void PokazPrzeterminowane()
+    {
+        var przeterminowane = _wypozyczenia.Where(w => w.PoTerminie);
+        Console.WriteLine($"Id sprzet | Id user | Data wypozyczenia");
+        foreach (var w in przeterminowane)
+        {
+            Console.WriteLine($"{w.Sprzet.Id} | {w.Uzytkownik.Id} | {w.DataWypozyczenia}");
+        }
+    }
+
+    public void WyswietlRaport()
+    {
+        Console.WriteLine($"Ilosc sprzetu: {_ekwipunek.Count}");
+        Console.WriteLine($"Wolny sprzet: {_ekwipunek.Count(s => s.CzyDostepny)}");
+        Console.WriteLine($"Aktywne wypozyczenia: {_wypozyczenia.Count(w => !w.DataZwrotu.HasValue)}");
+    }
 }
